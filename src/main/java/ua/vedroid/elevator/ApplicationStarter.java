@@ -1,45 +1,28 @@
 package ua.vedroid.elevator;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
+import java.util.Scanner;
 
 public class ApplicationStarter {
-    
-    public static final int MAX_FLOORS = 20;
-    public static final int MIX_FLOORS = 5;
-    public static final int MAX_PASSENGERS_IN_FLOOR = 10;
-    
     public static void main(String[] args) {
-        List<Floor> floors = new ArrayList<>();
-        generateFloors(floors);
-        printPassengersOnFloors(floors);
+        FloorService floorService = new FloorService();
+        List<Floor> floors = floorService.generateFloors();
         
-        Elevator elevator = new Elevator(floors);
-        elevator.start();
-    }
-    
-    private static void generateFloors(List<Floor> floors) {
-        int numberOfFloors = getRandomNumber(MAX_FLOORS - MIX_FLOORS) + MIX_FLOORS;
-        for (int floorNumber = 0; floorNumber < numberOfFloors; floorNumber++) {
-            LinkedList<Passenger> passengers = new LinkedList<>();
-            int numberOfPassengersInFloor = getRandomNumber(MAX_PASSENGERS_IN_FLOOR);
-            for (int j = 0; j < numberOfPassengersInFloor; j++) {
-                int requiredFloor = getRandomNumber(numberOfFloors);
-                passengers.add(new Passenger(requiredFloor));
+        System.out.println("Do you wanna see the queues at the each floor? Y - yes, N - no");
+        Scanner scanner = new Scanner(System.in);
+        boolean print = scanner.nextLine().equalsIgnoreCase("Y");
+        scanner.close();
+        if (print) {
+            floorService.printPassengersOnFloors(floors);
+            try {
+                Thread.sleep(5 * 1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-            floors.add(new Floor(floorNumber, passengers));
         }
-    }
-    
-    private static int getRandomNumber(int limit) {
-        return new Random().nextInt(limit);
-    }
-    
-    static void printPassengersOnFloors(List<Floor> floors) {
-        for (Floor floor : floors) {
-            System.out.println(floor);
+        new Elevator(floors).start();
+        if (print) {
+            floorService.printPassengersOnFloors(floors);
         }
     }
 }

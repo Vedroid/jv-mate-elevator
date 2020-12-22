@@ -18,19 +18,6 @@ public class Floor {
         updateButtons();
     }
     
-    private void updateButtons() {
-        upButton = false;
-        downButton = false;
-        for (Passenger passenger : passengers) {
-            if (passenger.getRequiredFloor() > floorNumber) {
-                upButton = true;
-            }
-            if (passenger.getRequiredFloor() < floorNumber) {
-                downButton = true;
-            }
-        }
-    }
-    
     public Passenger getPassengerFromTheBeginning() {
         Passenger passenger = passengers.pollFirst();
         updateButtons();
@@ -55,6 +42,19 @@ public class Floor {
             return null;
         }
         return passengers.peekLast();
+    }
+    
+    private void updateButtons() {
+        upButton = false;
+        downButton = false;
+        for (Passenger passenger : passengers) {
+            if (passenger.getRequiredFloor() > floorNumber) {
+                upButton = true;
+            }
+            if (passenger.getRequiredFloor() < floorNumber) {
+                downButton = true;
+            }
+        }
     }
     
     public int getFloorNumber() {

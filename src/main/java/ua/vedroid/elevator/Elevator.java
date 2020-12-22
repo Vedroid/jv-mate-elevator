@@ -34,25 +34,6 @@ public class Elevator {
             }
             nextFloor();
         }
-        ApplicationStarter.printPassengersOnFloors(floors);
-    }
-    
-    private boolean passengersWantToGoOut(int floorNumber) {
-        for (Passenger passenger : passengers) {
-            if (passenger.getRequiredFloor() == floorNumber) {
-                return true;
-            }
-        }
-        return false;
-    }
-    
-    private boolean floorsIsEmpty() {
-        for (Floor floor : floors) {
-            if (!floor.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
     }
     
     private void stopAtFloor() {
@@ -120,5 +101,23 @@ public class Elevator {
     
     private void changeDirection() {
         direction = direction == UP ? DOWN : UP;
+    }
+    
+    private boolean passengersWantToGoOut(int floorNumber) {
+        for (Passenger passenger : passengers) {
+            if (passenger.getRequiredFloor() == floorNumber) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    private boolean floorsIsEmpty() {
+        for (Floor floor : floors) {
+            if (!floor.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 }
