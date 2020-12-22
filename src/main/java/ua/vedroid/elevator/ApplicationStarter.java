@@ -6,6 +6,11 @@ import java.util.List;
 import java.util.Random;
 
 public class ApplicationStarter {
+    
+    public static final int MAX_FLOORS = 20;
+    public static final int MIX_FLOORS = 5;
+    public static final int MAX_PASSENGERS_IN_FLOOR = 10;
+    
     public static void main(String[] args) {
         List<Floor> floors = new ArrayList<>();
         generateFloors(floors);
@@ -16,10 +21,10 @@ public class ApplicationStarter {
     }
     
     private static void generateFloors(List<Floor> floors) {
-        int numberOfFloors = getRandomNumber(15) + 5;
+        int numberOfFloors = getRandomNumber(MAX_FLOORS - MIX_FLOORS) + MIX_FLOORS;
         for (int floorNumber = 0; floorNumber < numberOfFloors; floorNumber++) {
             LinkedList<Passenger> passengers = new LinkedList<>();
-            int numberOfPassengersInFloor = getRandomNumber(10);
+            int numberOfPassengersInFloor = getRandomNumber(MAX_PASSENGERS_IN_FLOOR);
             for (int j = 0; j < numberOfPassengersInFloor; j++) {
                 int requiredFloor = getRandomNumber(numberOfFloors);
                 passengers.add(new Passenger(requiredFloor));
