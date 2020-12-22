@@ -10,8 +10,8 @@ public class Elevator {
     private static final int MAX_CAPACITY = 5;
     private static final int GROUND_FLOOR = 0;
     
-    private final List<Passenger> passengers;
-    private final List<Floor> floors;
+    private List<Passenger> passengers;
+    private List<Floor> floors;
     private Floor currentFloor;
     private Direction direction;
     
@@ -24,10 +24,10 @@ public class Elevator {
     
     public void start() {
         while (!floorsIsEmpty()) {
-            if (passengers.size() < MAX_CAPACITY
-                    || passengersWantToGoOut(currentFloor.getFloorNumber())
+            if (passengersWantToGoOut(currentFloor.getFloorNumber())
+                    || (passengers.size() < MAX_CAPACITY && (!currentFloor.isEmpty()
                     || (direction == UP && currentFloor.upButtonPressed())
-                    || (direction == DOWN && currentFloor.downButtonPressed())) {
+                    || (direction == DOWN && currentFloor.downButtonPressed())))) {
                 stopAtFloor();
             } else {
                 System.out.println("'" + direction + "' ");
@@ -56,44 +56,56 @@ public class Elevator {
     }
     
     private void stopAtFloor() {
-        System.out.println(currentFloor.getFloorNumber() + " floor!");
+        System.out.print(currentFloor.getFloorNumber() + " floor! " + passengers);
         dropOffPassengers();
         addPassengers();
+        System.out.println(" -> " + passengers + "  In floor: " + currentFloor.getPassengers());
     }
     
     private void dropOffPassengers() {
-        passengers.removeIf(passenger -> passenger.getRequiredFloor() == currentFloor.getFloorNumber());
+        passengers.removeIf(passenger ->
+                passenger.getRequiredFloor() == currentFloor.getFloorNumber());
     }
     
     private void addPassengers() {
-        Passenger passenger = currentFloor.getNextPassenger();
-        if (passenger == null) {
-            return;
-        }
-        int requiredFloorNumber = passenger.getRequiredFloor();
-        int currentFloorNumber = currentFloor.getFloorNumber();
-        while (passengers.size() < MAX_CAPACITY) {
-            if ((direction.equals(UP) && currentFloorNumber < requiredFloorNumber)
-                    || (direction.equals(DOWN) && currentFloorNumber > requiredFloorNumber)) {
-                passengers.add(passenger);
+        while (true) {
+            if (passengers.size() >= MAX_CAPACITY || currentFloor.isEmpty()) {
+                return;
+            }
+            if (direction.equals(UP)) {
+                Passenger passenger = currentFloor.checkPassengerFromTheEnd();
+                if (passenger == null) {
+                    return;
+                }
+                if (currentFloor.getFloorNumber() < passenger.getRequiredFloor()) {
+                    passengers.add(currentFloor.getPassengerFromTheEnd());
+                } else {
+                    return;
+                }
+            } else if (direction.equals(DOWN)) {
+                Passenger passenger = currentFloor.checkPassengerFromTheBeginning();
+                if (passenger == null) {
+                    return;
+                }
+                if (currentFloor.getFloorNumber() > passenger.getRequiredFloor()) {
+                    passengers.add(currentFloor.getPassengerFromTheBeginning());
+                } else {
+                    return;
+                }
             }
         }
     }
     
     private void nextFloor() {
         if (direction == UP) {
+            up();
             if (currentFloor.getFloorNumber() == floors.size() - 1) {
                 changeDirection();
-                down();
-            } else {
-                up();
             }
         } else {
+            down();
             if (currentFloor.getFloorNumber() == 0) {
                 changeDirection();
-                up();
-            } else {
-                down();
             }
         }
     }

@@ -18,7 +18,7 @@ public class ApplicationStarter {
     private static void generateFloors(List<Floor> floors) {
         int numberOfFloors = getRandomNumber(15) + 5;
         for (int floorNumber = 0; floorNumber < numberOfFloors; floorNumber++) {
-            List<Passenger> passengers = new LinkedList<>();
+            LinkedList<Passenger> passengers = new LinkedList<>();
             int numberOfPassengersInFloor = getRandomNumber(10);
             for (int j = 0; j < numberOfPassengersInFloor; j++) {
                 int requiredFloor = getRandomNumber(numberOfFloors);
@@ -32,7 +32,7 @@ public class ApplicationStarter {
         return new Random().nextInt(limit);
     }
     
-    public static void printPassengersOnFloors(List<Floor> floors) {
+    static void printPassengersOnFloors(List<Floor> floors) {
         for (Floor floor : floors) {
             System.out.println(floor);
         }

@@ -1,18 +1,20 @@
 package ua.vedroid.elevator;
 
-import java.util.List;
+import java.util.Comparator;
+import java.util.LinkedList;
 
 public class Floor {
     private final int floorNumber;
-    private final List<Passenger> passengers;
+    private LinkedList<Passenger> passengers;
     private boolean upButton;
     private boolean downButton;
     
-    public Floor(int floorNumber, List<Passenger> passengers) {
+    public Floor(int floorNumber, LinkedList<Passenger> passengers) {
         this.floorNumber = floorNumber;
         this.passengers = passengers;
         
-        passengers.removeIf(passenger -> passenger.getRequiredFloor() == floorNumber);
+        this.passengers.removeIf(passenger -> passenger.getRequiredFloor() == floorNumber);
+        this.passengers.sort(Comparator.comparingInt(Passenger::getRequiredFloor));
         updateButtons();
     }
     
@@ -29,18 +31,38 @@ public class Floor {
         }
     }
     
-    public Passenger getNextPassenger() {
-        if (passengers.isEmpty()) {
-            return null;
-        }
-        Passenger passenger = passengers.get(passengers.size() - 1);
-        passengers.remove(passengers.size() - 1);
+    public Passenger getPassengerFromTheBeginning() {
+        Passenger passenger = passengers.pollFirst();
         updateButtons();
         return passenger;
     }
     
+    public Passenger getPassengerFromTheEnd() {
+        Passenger passenger = passengers.pollLast();
+        updateButtons();
+        return passenger;
+    }
+    
+    public Passenger checkPassengerFromTheBeginning() {
+        if (passengers.isEmpty()) {
+            return null;
+        }
+        return passengers.peekFirst();
+    }
+    
+    public Passenger checkPassengerFromTheEnd() {
+        if (passengers.isEmpty()) {
+            return null;
+        }
+        return passengers.peekLast();
+    }
+    
     public int getFloorNumber() {
         return floorNumber;
+    }
+    
+    public LinkedList<Passenger> getPassengers() {
+        return passengers;
     }
     
     public boolean upButtonPressed() {
