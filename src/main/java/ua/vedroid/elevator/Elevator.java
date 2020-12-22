@@ -1,5 +1,6 @@
 package ua.vedroid.elevator;
 
+import static ua.vedroid.elevator.ApplicationStarter.print;
 import static ua.vedroid.elevator.Direction.DOWN;
 import static ua.vedroid.elevator.Direction.UP;
 
@@ -30,17 +31,23 @@ public class Elevator {
                     || (direction == DOWN && currentFloor.downButtonPressed())))) {
                 stopAtFloor();
             } else {
-                System.out.println("'" + direction + "' ");
+                if (print()) {
+                    System.out.println("'" + direction + "' ");
+                }
             }
             nextFloor();
         }
     }
     
     private void stopAtFloor() {
-        System.out.print(currentFloor.getFloorNumber() + " floor! " + passengers);
+        if (print()) {
+            System.out.print(currentFloor.getFloorNumber() + " floor! " + passengers);
+        }
         dropOffPassengers();
         addPassengers();
-        System.out.println(" -> " + passengers + "  In floor: " + currentFloor.getPassengers());
+        if (print()) {
+            System.out.println(" -> " + passengers + "  In floor: " + currentFloor.getPassengers());
+        }
     }
     
     private void dropOffPassengers() {
