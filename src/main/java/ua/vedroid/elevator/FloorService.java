@@ -7,7 +7,7 @@ import java.util.Random;
 
 public class FloorService {
     private static final int MAX_FLOORS = 20;
-    private static final int MIX_FLOORS = 5;
+    private static final int MIN_FLOORS = 5;
     private static final int MAX_PASSENGERS_IN_FLOOR = 10;
     
     public void printPassengersOnFloors(List<Floor> floors) {
@@ -18,9 +18,9 @@ public class FloorService {
     
     public List<Floor> generateFloors() {
         List<Floor> floors = new ArrayList<>();
-        int numberOfFloors = getRandomNumber(MAX_FLOORS - MIX_FLOORS) + MIX_FLOORS;
+        int numberOfFloors = getRandomNumber(MAX_FLOORS - MIN_FLOORS) + MIN_FLOORS;
         for (int floorNumber = 0; floorNumber < numberOfFloors; floorNumber++) {
-            LinkedList<Passenger> passengers = new LinkedList<>();
+            List<Passenger> passengers = new LinkedList<>();
             int numberOfPassengersInFloor = getRandomNumber(MAX_PASSENGERS_IN_FLOOR);
             for (int j = 0; j < numberOfPassengersInFloor; j++) {
                 int requiredFloor = getRandomNumber(numberOfFloors);
