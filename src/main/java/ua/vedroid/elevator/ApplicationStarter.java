@@ -4,15 +4,13 @@ import java.util.List;
 import java.util.Scanner;
 
 public class ApplicationStarter {
-    private static boolean print;
-    
     public static void main(String[] args) {
         FloorService floorService = new FloorService();
         List<Floor> floors = floorService.generateFloors();
         
         System.out.println("Do you wanna see the queues at the each floor? Y - yes, N - no");
         Scanner scanner = new Scanner(System.in);
-        print = scanner.nextLine().equalsIgnoreCase("Y");
+        boolean print = scanner.nextLine().equalsIgnoreCase("Y");
         scanner.close();
         if (print) {
             floorService.printPassengersOnFloors(floors);
@@ -22,13 +20,11 @@ public class ApplicationStarter {
                 throw new RuntimeException(e);
             }
         }
-        new Elevator(floors).start();
+        Elevator elevator = new Elevator(floors);
+        elevator.start();
         if (print) {
             floorService.printPassengersOnFloors(floors);
+            System.out.println("Total stops: " + elevator.getStopCounter());
         }
-    }
-    
-    public static boolean print() {
-        return print;
     }
 }
