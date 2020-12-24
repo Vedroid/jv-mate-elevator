@@ -1,6 +1,5 @@
 package ua.vedroid.elevator;
 
-import static ua.vedroid.elevator.ApplicationStarter.print;
 import static ua.vedroid.elevator.Direction.DOWN;
 import static ua.vedroid.elevator.Direction.UP;
 
@@ -15,6 +14,7 @@ public class Elevator {
     private List<Floor> floors;
     private Floor currentFloor;
     private Direction direction;
+    private int stopCounter;
     
     public Elevator(List<Floor> floors) {
         passengers = new LinkedList<>();
@@ -24,62 +24,48 @@ public class Elevator {
     }
     
     public void start() {
-        while (!floorsIsEmpty()) {
-            if (passengersWantToGoOut(currentFloor.getFloorNumber())
-                    || (passengers.size() < MAX_CAPACITY && (!currentFloor.isEmpty()
-                    || (direction == UP && currentFloor.upButtonPressed())
-                    || (direction == DOWN && currentFloor.downButtonPressed())))) {
-                stopAtFloor();
-            } else {
-                if (print()) {
-                    System.out.println("'" + direction + "' ");
-                }
-            }
+        while (!floorsIsEmpty() || !passengers.isEmpty()) {
+            shouldStopAtTheFloor();
             nextFloor();
         }
     }
     
-    private void stopAtFloor() {
-        if (print()) {
-            System.out.print(currentFloor.getFloorNumber() + " floor! " + passengers);
+    private void shouldStopAtTheFloor() {
+        if (passengersWantToGoOut(currentFloor.getNumber())
+                || (passengers.size() < MAX_CAPACITY && (!currentFloor.isEmpty()
+                && ((direction == UP && currentFloor.upButtonPressed())
+                || (direction == DOWN && currentFloor.downButtonPressed()))))) {
+            stopAtFloor();
+        } else {
+            System.out.println("'" + direction + "' ");
         }
+    }
+    
+    private void stopAtFloor() {
+        System.out.print(currentFloor.getNumber() + " floor! " + passengers);
+        stopCounter++;
         dropOffPassengers();
         addPassengers();
-        if (print()) {
-            System.out.println(" -> " + passengers + "  In floor: " + currentFloor.getPassengers());
-        }
+        System.out.println(" -> " + passengers + "  In floor: " + currentFloor.getPassengers());
     }
     
     private void dropOffPassengers() {
         passengers.removeIf(passenger ->
-                passenger.getRequiredFloor() == currentFloor.getFloorNumber());
+                passenger.getRequiredFloor() == currentFloor.getNumber());
     }
     
     private void addPassengers() {
-        while (true) {
+        List<Passenger> passengersInFloor = new LinkedList<>(currentFloor.getPassengers());
+        for (Passenger passenger : passengersInFloor) {
             if (passengers.size() >= MAX_CAPACITY || currentFloor.isEmpty()) {
                 return;
             }
-            if (direction.equals(UP)) {
-                Passenger passenger = currentFloor.checkPassengerFromTheEnd();
-                if (passenger == null) {
-                    return;
-                }
-                if (currentFloor.getFloorNumber() < passenger.getRequiredFloor()) {
-                    passengers.add(currentFloor.getPassengerFromTheEnd());
-                } else {
-                    return;
-                }
-            } else if (direction.equals(DOWN)) {
-                Passenger passenger = currentFloor.checkPassengerFromTheBeginning();
-                if (passenger == null) {
-                    return;
-                }
-                if (currentFloor.getFloorNumber() > passenger.getRequiredFloor()) {
-                    passengers.add(currentFloor.getPassengerFromTheBeginning());
-                } else {
-                    return;
-                }
+            if ((direction.equals(UP)
+                    && currentFloor.getNumber() < passenger.getRequiredFloor())
+                    || (direction.equals(DOWN)
+                    && currentFloor.getNumber() > passenger.getRequiredFloor())) {
+                passengers.add(passenger);
+                currentFloor.removePassenger(passenger);
             }
         }
     }
@@ -87,23 +73,23 @@ public class Elevator {
     private void nextFloor() {
         if (direction == UP) {
             up();
-            if (currentFloor.getFloorNumber() == floors.size() - 1) {
+            if (currentFloor.getNumber() == floors.size() - 1) {
                 changeDirection();
             }
         } else {
             down();
-            if (currentFloor.getFloorNumber() == 0) {
+            if (currentFloor.getNumber() == 0) {
                 changeDirection();
             }
         }
     }
     
     private void up() {
-        currentFloor = floors.get(currentFloor.getFloorNumber() + 1);
+        currentFloor = floors.get(currentFloor.getNumber() + 1);
     }
     
     private void down() {
-        currentFloor = floors.get(currentFloor.getFloorNumber() - 1);
+        currentFloor = floors.get(currentFloor.getNumber() - 1);
     }
     
     private void changeDirection() {
@@ -126,5 +112,9 @@ public class Elevator {
             }
         }
         return true;
+    }
+    
+    public int getStopCounter() {
+        return stopCounter;
     }
 }
