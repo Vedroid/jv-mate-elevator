@@ -4,7 +4,6 @@ import java.util.List;
 
 public class Floor {
     private final int number;
-    //private LinkedList<Passenger> passengers;
     private List<Passenger> passengers;
     private boolean upButton;
     private boolean downButton;
@@ -14,7 +13,6 @@ public class Floor {
         this.passengers = passengers;
         
         this.passengers.removeIf(passenger -> passenger.getRequiredFloor() == number);
-        //this.passengers.sort(Comparator.comparingInt(Passenger::getRequiredFloor));
         updateButtons();
     }
     
