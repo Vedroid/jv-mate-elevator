@@ -4,15 +4,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.LinkedList;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ElevatorTest {
+public class ElevatorTest {
     private Elevator elevator;
-    private LinkedList<Floor> floors;
+    private List<Floor> floors;
     
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         floors = new LinkedList<>();
         for (int i = 0; i < 20; i++) {
             LinkedList<Passenger> passengers = new LinkedList<>();
@@ -25,10 +26,15 @@ class ElevatorTest {
     }
     
     @Test
-    void start() {
+    public void start_testNumberOfStops() {
+        elevator.start();
+        assertEquals(161, elevator.getStopCounter());
+    }
+    
+    @Test
+    public void start_testFloorsIsEmpty() {
         elevator.start();
         for (Floor floor : floors) {
-            assertEquals(0, floor.getPassengers().size());
             assertTrue(floor.isEmpty());
         }
     }

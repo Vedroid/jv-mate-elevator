@@ -8,8 +8,9 @@ import java.util.LinkedList;
 import org.junit.jupiter.api.Test;
 
 class FloorTest {
+    
     @Test
-    void testRemovePassengers() {
+    void testRemovePassengersFromTheSameFloor() {
         LinkedList<Passenger> passengersToGroundFloor = new LinkedList<>();
         LinkedList<Passenger> passengersToSecondFloor = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
@@ -25,7 +26,7 @@ class FloorTest {
     }
     
     @Test
-    void getPassengerFromTheBeginning() {
+    void removePassenger() {
         LinkedList<Passenger> passengers = new LinkedList<>();
         for (int i = 0; i < 10; i++) {
             passengers.add(new Passenger(i));
@@ -33,27 +34,14 @@ class FloorTest {
         Floor actualFloor;
         actualFloor = new Floor(0, passengers);
         for (int i = 0; i < 3; i++) {
-            actualFloor.getPassengerFromTheBeginning();
+            actualFloor.removePassenger(actualFloor.getPassengers().get(0));
         }
-        assertEquals(6, actualFloor.getPassengers().size());
-        assertEquals(4, actualFloor.getPassengers().get(0).getRequiredFloor());
-    }
-    
-    @Test
-    void getPassengerFromTheEnd() {
-        LinkedList<Passenger> passengers = new LinkedList<>();
-        for (int i = 0; i < 10; i++) {
-            passengers.add(new Passenger(i));
-        }
-        Floor actualFloor;
-        actualFloor = new Floor(0, passengers);
-        for (int i = 0; i < 3; i++) {
-            actualFloor.getPassengerFromTheEnd();
-        }
-        int actualFloorSize = actualFloor.getPassengers().size();
-        assertEquals(6, actualFloorSize);
-        assertEquals(6,
-                actualFloor.getPassengers().get(actualFloorSize - 1).getRequiredFloor());
+        
+        int actualNumberOfPassengersInFloor = actualFloor.getPassengers().size();
+        assertEquals(6, actualNumberOfPassengersInFloor);
+        
+        int actualRequiredFloor = actualFloor.getPassengers().get(0).getRequiredFloor();
+        assertEquals(4, actualRequiredFloor);
     }
     
     @Test
